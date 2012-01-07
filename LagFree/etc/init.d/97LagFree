@@ -1,0 +1,304 @@
+#!/system/bin/sh
+#
+#  Smoothness Tweak for Galaxy ACE. Test 2 (Experimental)
+#
+
+for n in 1 2
+do
+
+  USER_LAUNCHER=""  # Change this to your launcher app
+
+  NUMBER_OF_CHECKS=0					# Total number of rechecks before ending 1st loop
+  SLEEP_TIME=0						# Number of seconds between rechecking processes
+  PROCESSES_TOTAL=14					# Must be edited to match the number of processes to be checked
+  DEBUG_ECHO=0						# Debug on/off
+
+  CHECK_COUNT=0						# Don't edit
+  P_CHECK=0						# Don't edit
+  CHECK_OK=0						# Unused
+
+  PROCESS_1=0; PROCESS_2=0; PROCESS_3=0; PROCESS_4=0; PROCESS_5=0; PROCESS_6=0;
+  PROCESS_7=0; PROCESS_8=0; PROCESS_9=0; PROCESS_10=0; PROCESS_11=0; PROCESS_12=0;
+  PROCESS_13=0; PROCESS_14=0; PROCESS_15=0; PROCESS_16=0; PROCESS_17=0; PROCESS_18=0;
+  PROCESS_19=0; PROCESS_20=0; PROCESS_21=0; PROCESS_22=0; PROCESS_23=0; PROCESS_24=0;
+
+  if [ $n -eq "1" ]; then
+    if [ $DEBUG_ECHO -eq "1" ]; then
+      echo ""
+      echo "LST Debug: $(date)"
+      echo "LST Debug: Initiate"
+    fi;
+
+    # Pause and then loop until kswapd0 is found, which should be instant anyway
+    sleep 1
+    SWAP_SLEEP_TIME=3; SWAP_NUMBER_OF_CHECKS=30; SWAP_CHECK_COUNT=0; SWAP_CHECK_COUNT_OK=0; while [ $SWAP_CHECK_COUNT -lt $SWAP_NUMBER_OF_CHECKS ]; do if [ `pidof kswapd0` ]; then renice 19 `pidof kswapd0`; SWAP_CHECK_COUNT=$SWAP_NUMBER_OF_CHECKS; SWAP_CHECK_COUNT_OK=1; else sleep $SWAP_SLEEP_TIME; fi; SWAP_CHECK_COUNT=`expr $SWAP_CHECK_COUNT + 1`; done; if [ $SWAP_CHECK_COUNT_OK -lt 1 ]; then echo "LST Debug: 'kswapd0' expired after `expr $SWAP_CHECK_COUNT \* $SWAP_SLEEP_TIME` seconds"; fi;
+
+    if [ $DEBUG_ECHO -eq "1" ]; then
+      echo "LST Debug: $(date)";
+      echo "LST Debug: kswapd0 found";
+    fi;
+  fi;
+
+  # Check briefly one more time
+  if [ $n -eq "2" ]; then
+    if [ $DEBUG_ECHO -eq "1" ]; then
+      echo "LST Debug: 2nd loop"
+    fi;
+    NUMBER_OF_CHECKS=6					# Editing not recommended
+    SLEEP_TIME=5					# Editing not recommended
+  fi;
+
+  while [ $CHECK_COUNT -lt $NUMBER_OF_CHECKS ];
+  do
+    # Resident system apps
+    if [ $PROCESS_1 -eq "0" ]; then PNAME="com.android.phone"; NICELEVEL=-20; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_1=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+    if [ $PROCESS_2 -eq "0" ]; then PNAME="com.android.systemui"; NICELEVEL=-18; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_2=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+    if [ $PROCESS_3 -eq "0" ]; then PNAME="com.android.settings"; NICELEVEL=-18; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_3=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+    if [ $PROCESS_4 -eq "0" ]; then PNAME="com.swype.android.inputmethod"; NICELEVEL=-18; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_4=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+    if [ $PROCESS_5 -eq "0" ]; then PNAME="$USER_LAUNCHER"; NICELEVEL=-18; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_5=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+    if [ $PROCESS_6 -eq "0" ]; then PNAME="com.android.vending"; NICELEVEL=-18; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_6=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+    if [ $PROCESS_7 -eq "0" ]; then PNAME="com.android.mms"; NICELEVEL=-19; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_7=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+    if [ $PROCESS_8 -eq "0" ]; then PNAME="android.process.acore"; NICELEVEL=-3; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_8=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+    if [ $PROCESS_9 -eq "0" ]; then PNAME="android.process.media"; NICELEVEL=-3; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_9=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+
+    # Other system apps
+    if [ $PROCESS_10 -eq "0" ]; then PNAME=""; NICELEVEL=-19; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_10=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+    if [ $PROCESS_11 -eq "0" ]; then PNAME=""; NICELEVEL=-19; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_11=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+    if [ $PROCESS_12 -eq "0" ]; then PNAME=""; NICELEVEL=-18; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_12=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+    if [ $PROCESS_13 -eq "0" ]; then PNAME=""; NICELEVEL=19; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_13=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+
+    # org.adwfreak.launcher
+    # org.zeam.core
+
+    # Other apps
+    if [ $PROCESS_14 -eq "0" ]; then PNAME="com.speedsoftware.rootexplorer"; NICELEVEL=-15; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_14=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+#    if [ $PROCESS_15 -eq "0" ]; then PNAME=""; NICELEVEL=-15; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_15=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+#    if [ $PROCESS_16 -eq "0" ]; then PNAME=""; NICELEVEL=-15; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_16=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+#    if [ $PROCESS_17 -eq "0" ]; then PNAME=""; NICELEVEL=-15; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_17=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+#    if [ $PROCESS_18 -eq "0" ]; then PNAME=""; NICELEVEL=-15; if [ `pidof $PNAME` ]; then renice $NICELEVEL `pidof $PNAME`; PROCESS_18=1; P_CHECK=`expr $P_CHECK + 1`; fi; fi;
+
+    # If all processes are done, loop can finish early
+    if [ $P_CHECK -ge $PROCESSES_TOTAL ]; then CHECK_COUNT=$NUMBER_OF_CHECKS; else sleep $SLEEP_TIME; fi;
+
+    CHECK_COUNT=`expr $CHECK_COUNT + 1`;
+  done
+
+  if [ $DEBUG_ECHO -eq "1" ]; then
+    echo "LST Debug: $(date)"
+    if [ $PROCESS_1 -eq "0" ]; then echo "LST Debug: PROCESS_1 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
+    if [ $PROCESS_2 -eq "0" ]; then echo "LST Debug: PROCESS_2 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
+    if [ $PROCESS_3 -eq "0" ]; then echo "LST Debug: PROCESS_3 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
+    if [ $PROCESS_4 -eq "0" ]; then echo "LST Debug: PROCESS_4 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
+    if [ $PROCESS_5 -eq "0" ]; then echo "LST Debug: PROCESS_5 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
+    if [ $PROCESS_6 -eq "0" ]; then echo "LST Debug: PROCESS_6 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
+    if [ $PROCESS_7 -eq "0" ]; then echo "LST Debug: PROCESS_7 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
+    if [ $PROCESS_8 -eq "0" ]; then echo "LST Debug: PROCESS_8 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
+    if [ $PROCESS_9 -eq "0" ]; then echo "LST Debug: PROCESS_9 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
+    if [ $PROCESS_10 -eq "0" ]; then echo "LST Debug: PROCESS_10 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
+    if [ $PROCESS_11 -eq "0" ]; then echo "LST Debug: PROCESS_11 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
+    if [ $PROCESS_12 -eq "0" ]; then echo "LST Debug: PROCESS_12 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
+    if [ $PROCESS_13 -eq "0" ]; then echo "LST Debug: PROCESS_13 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
+    if [ $PROCESS_14 -eq "0" ]; then echo "LST Debug: PROCESS_14 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
+#    if [ $PROCESS_15 -eq "0" ]; then echo "LST Debug: PROCESS_15 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
+#    if [ $PROCESS_16 -eq "0" ]; then echo "LST Debug: PROCESS_16 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
+#    if [ $PROCESS_17 -eq "0" ]; then echo "LST Debug: PROCESS_17 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
+#    if [ $PROCESS_18 -eq "0" ]; then echo "LST Debug: PROCESS_18 expired after `expr $CHECK_COUNT \* $SLEEP_TIME` seconds"; fi;
+
+    echo "LST Debug: Checking complete"
+  fi;
+
+done
+
+if [ $DEBUG_ECHO -eq "0" ]; then
+  echo "LST Debug: Done"
+  echo ""
+fi;
+
+#!/system/bin/sh
+#Touchscreen (Slaid480)
+#Configure touchscreen sensitivity
+#Sensitive(Chainfire)
+
+echo 7035 > /sys/class/touch/switch/set_touchscreen;
+echo 8002 > /sys/class/touch/switch/set_touchscreen;
+echo 11000 > /sys/class/touch/switch/set_touchscreen;
+echo 13060 > /sys/class/touch/switch/set_touchscreen;
+echo 14005 > /sys/class/touch/switch/set_touchscreen;
+
+#!/system/bin/sh
+# This script is only edited by me to improve it for S5830, credits goes to
+# Copyright© 2011 SLAID480
+#Part below here by me
+
+if [ -e /sys/devices/virtual/bdi/179:0/read_ahead_kb ]
+  then
+    /system/xbin/echo "4096" > /sys/devices/virtual/bdi/179:0/read_ahead_kb;
+fi;
+	
+if [ -e /sys/devices/virtual/bdi/179:8/read_ahead_kb ]
+  then
+    /system/xbin/echo "4096" > /sys/devices/virtual/bdi/179:8/read_ahead_kb;
+fi;
+
+if [ -e /sys/devices/virtual/bdi/default/read_ahead_kb ]
+  then
+    /system/xbin/echo "4096" > /sys/devices/virtual/bdi/default/read_ahead_kb;
+fi;
+
+#Part below here edited by me (changed values) Credits to Juwe11
+if [ -e /sys/module/lowmemorykiller/parameters/adj ]; then
+	echo "0,1,2,4,6,15" > /sys/module/lowmemorykiller/parameters/adj
+fi
+
+if [ -e /sys/module/lowmemorykiller/parameters/minfree ]; then
+	echo "2560,4096,5632,10240,11776,14848" > /sys/module/lowmemorykiller/parameters/minfree
+fi
+
+if [ -e /proc/sys/vm/swappiness ]; then
+	echo "20" > /proc/sys/vm/swappiness
+fi
+
+if [ -e /proc/sys/vm/vfs_cache_pressure ]; then
+	echo "70" > /proc/sys/vm/vfs_cache_pressure
+fi
+
+if [ -e /proc/sys/vm/dirty_expire_centisecs ]; then
+	echo "3000" > /proc/sys/vm/dirty_expire_centisecs
+fi
+
+if [ -e /proc/sys/vm/dirty_writeback_centisecs ]; then
+	echo "450" > /proc/sys/vm/dirty_writeback_centisecs
+fi
+
+if [ -e /proc/sys/vm/dirty_ratio ]; then
+	echo "10" > /proc/sys/vm/dirty_ratio
+fi
+
+if [ -e /proc/sys/vm/dirty_background_ratio ]; then
+	echo "2" > /proc/sys/vm/dirty_background_ratio
+fi
+
+# Below here everything is Copyright© by
+# Slaid480 !
+
+
+LOG_FILE=/data/zipalign.log
+ZIPALIGNDB=/data/zipalign.db
+
+if [ -e $LOG_FILE ]; then
+	rm $LOG_FILE;
+fi;
+
+if [ ! -f $ZIPALIGNDB ]; then
+	touch $ZIPALIGNDB;
+fi;
+
+echo "Starting FV Automatic ZipAlign $( date +"%m-%d-%Y %H:%M:%S" )" | tee -a $LOG_FILE
+
+for DIR in /system/app /data/app ; do
+  cd $DIR
+  for APK in *.apk ; do
+    if [ $APK -ot $ZIPALIGNDB ] && [ $(grep "$DIR/$APK" $ZIPALIGNDB|wc -l) -gt 0 ] ; then
+      echo "Already checked: $DIR/$APK" | tee -a $LOG_FILE
+    else
+      zipalign -c 4 $APK
+      if [ $? -eq 0 ] ; then
+        echo "Already aligned: $DIR/$APK" | tee -a $LOG_FILE
+        grep "$DIR/$APK" $ZIPALIGNDB > /dev/null || echo $DIR/$APK >> $ZIPALIGNDB
+      else
+        echo "Now aligning: $DIR/$APK" | tee -a $LOG_FILE
+        zipalign -f 4 $APK /cache/$APK
+        busybox mount -o rw,remount /system
+        cp -f -p /cache/$APK $APK
+        busybox rm -f /cache/$APK
+        grep "$DIR/$APK" $ZIPALIGNDB > /dev/null || echo $DIR/$APK >> $ZIPALIGNDB
+      fi
+    fi
+  done
+done
+
+busybox mount -o ro,remount /system
+touch $ZIPALIGNDB
+echo "Automatic ZipAlign finished at $( date +"%m-%d-%Y %H:%M:%S" )" | tee -a $LOG_FILE
+
+
+MODULES="ipv6"
+
+for i in $MODULES;
+do
+    modprobe $i;
+done
+
+sysctl -p /etc/sysctl.conf;
+
+LOOP=`ls -d /sys/block/loop*`;
+blk0=`ls -d /sys/block/mmcblk0`;
+blk1=`ls -d /sys/block/mmcblk1`;
+MMC=`ls -d /sys/block/mmc*`;
+
+for j in $blk0 $blk1; do
+	echo "0" > $j/queue/rotational;
+	echo "4096" > $j/queue/read_ahead_kb;
+done;
+
+for k in $(busybox mount | grep relatime | cut -d " " -f3) ; do
+sync;
+busybox mount -o remount,noatime $k;
+done;
+
+for i in /sys/block/*/queue/scheduler ; do
+echo "noop" > $i;
+done;
+
+for a in $blk0 $blk1 $MMC ; do
+	echo "512" > $a/queue/nr_requests;
+done;
+
+# Created by Einherjar Development Team
+#
+
+
+# Remount all partitions with noatime
+for k in $(busybox mount | grep relatime | cut -d " " -f3) ; do
+	sync
+	busybox mount -o remount,noatime $k
+done
+
+# One-time tweaks to apply on every boot
+STL=`ls -d /sys/block/stl*`
+BML=`ls -d /sys/block/bml*`
+MMC=`ls -d /sys/block/mmc*`
+
+# Tweak deadline io scheduler
+for i in $STL $BML $MMC $TFSR; do
+	echo 0 > $i/queue/rotational
+	echo 1 > $i/queue/iosched/low_latency
+	echo 1 > $i/queue/iosched/back_seek_penalty
+	echo 1000000000 > $i/queue/iosched/back_seek_max
+	echo 3 > $i/queue/iosched/slice_idle
+	echo 16 > $i/queue/iosched/quantum
+	echo 1 > $i/queue/iosched/fifo_batch
+	echo deadline > $i/queue/scheduler
+done
+
+# Tweak kernel VM management
+echo 0 > /proc/sys/vm/swappiness
+echo 10 > /proc/sys/vm/dirty_ratio
+echo 4096 > /proc/sys/vm/min_free_kbytes
+
+# Tweak kernel scheduler, less aggressive settings
+echo 20000000 > /proc/sys/kernel/sched_latency_ns
+echo 2500000 > /proc/sys/kernel/sched_wakeup_granularity_ns
+echo 1000000 > /proc/sys/kernel/sched_min_granularity_ns
+
+# Misc tweaks for battery life
+echo "2000" > /proc/sys/vm/dirty_writeback_centisecs
+echo "1000" > /proc/sys/vm/dirty_expire_centisecs
+
+# Minfree Handler
+# Values in MB = 10, 16, 24, 68, 76, 92
+echo 2560,4096,6144,17408,19456,23552 > /sys/module/lowmemorykiller/parameters/minfree
+
+# SD card Read-ahead set to 2048kb instead of default 128kb
+#if [ -e /sys/devices/virtual/bdi/179:0/read_ahead_kb ]; then
+#	/system/xbin/echo "2048" > 
